@@ -1,0 +1,68 @@
+# Ignore build and publish folders
+bin/
+obj/
+out/
+dist/
+publish/
+
+# Ignore the .NET user-specific files
+*.user
+*.rsuser
+*.suo
+*.vspx
+*.vscode
+*.vs
+.vscode/
+
+# Ignore .NET Core generated files
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Ignore Angular build artifacts and logs
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+package-lock.json
+.pnpm-debug.log
+package.json
+angular.json
+dist/
+e2e/
+tmp/
+coverage/
+
+# Ignore environment files
+*.env
+.env.*
+*.local
+
+# Ignore npm packages and lock files
+yarn.lock
+pnpm-lock.yaml
+
+# Ignore IDEs and editors specific folders/files
+.idea/
+*.iml
+.DS_Store
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# Ignore auto-generated files by OS
+Thumbs.db
+desktop.ini
+
+# Ignore generated assets and bundle files
+.sass-cache/
+*.css.map
+*.js.map
+*.scssc
+
+# Ignore Angular app test coverage
+/coverage/

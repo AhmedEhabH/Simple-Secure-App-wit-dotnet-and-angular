@@ -1,0 +1,54 @@
+<div class="h-screen flex items-center justify-center">
+    <form class="shadow-md rounded-md p-5 bg-white w-1/5">
+        <div class="py-4">
+            <h1 class="font-bold text-left py-2">
+                Register
+            </h1>
+            <h6 class="text-slate-600 text-base">
+                Create your account
+            </h6>
+        </div>
+
+        <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" placeholder="Email" required>
+            <mat-icon matPrefix>email</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Full Name</mat-label>
+            <input matInput type="text" placeholder="Full Name" required>
+            <mat-icon matPrefix>person</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Roles</mat-label>
+            <mat-select multiple placeholder="Select roles" required>
+                <mat-option value="admin">Admin</mat-option>
+                <mat-option value="user">User</mat-option>
+            </mat-select>
+            <mat-icon matPrefix>groups</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Password</mat-label>
+            <input matInput type="Password" placeholder="Password" required>
+            <mat-icon matPrefix>lock</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Confirm Password</mat-label>
+            <input matInput type="Password" placeholder="Confirm Password" required>
+            <mat-icon matPrefix>lock</mat-icon>
+        </mat-form-field>
+
+        <button class="w-full border border-collapse border-slate-200 rounded-md disabled:bg-purple-400 py-2 px-3 bg-purple-700 text-white"  type="submit">
+            Register
+        </button>
+
+        <div class="my-4">
+            <span class="text-slate-600">Already have an account? </span>
+            <a class="text-purple-700" [routerLink]="['/login']">Login</a>
+        </div>
+    </form>
+</div>
