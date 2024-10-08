@@ -7,7 +7,7 @@ import {environment} from '../../environments/environment.development';
 import {AuthResponse} from '../interfaces/auth-response';
 import {LoginRequest} from '../interfaces/login-request';
 import {RegisterRequest} from '../interfaces/register-request';
-import { UserDetail } from '../interfaces/user-detail';
+import {UserDetail} from '../interfaces/user-detail';
 
 @Injectable({providedIn : 'root'})
 export class AuthService {
@@ -70,15 +70,26 @@ export class AuthService {
             return result;
         }
 
-    getToken = (): string
-        |null => localStorage.getItem(this.tokenKey) || '';
+    getToken = (): string|null => localStorage.getItem(this.tokenKey) || '';
 
     register(data: RegisterRequest): Observable<AuthResponse> {
         return this.http.post<AuthResponse>(`${this.apiUrl}/account/register`,
                                             data);
     }
 
-    getAccountDetail = () : Observable<UserDetail>=>{
+    getAccountDetail = (): Observable<UserDetail >=> {
         return this.http.get<UserDetail>(`${this.apiUrl}/account/detail`);
+    }
+
+    getAllUsers = (): Observable<UserDetail[] >=> {
+        return this.http.get<UserDetail[]>(`${this.apiUrl}/account`);
+    }
+
+    getUserRoles = (): string[] | null => {
+        const token = this.getToken();
+        if(!token) return null;
+
+        const decodedToken: any = jwtDecode(token);
+        return decodedToken.role || null;
     }
 }
