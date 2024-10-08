@@ -1,5 +1,12 @@
 <div class="h-screen flex items-center justify-center">
-    <form class="shadow-md rounded-md p-5 bg-white w-1/5">
+    <form class="shadow-md rounded-md p-5 bg-white w-1/5" [formGroup]="registerForm" (ngSubmit)="register()">
+        @for (error of errors; track error) {
+        <div class="bg-red-100 border mb-2 flex flex-col gap-2 border-red-400 text-red-400 px4 py4 rounded-md relative">
+            <div class="text-xs">
+                {{error.description}}
+            </div>
+        </div>
+        }
         <div class="py-4">
             <h1 class="font-bold text-left py-2">
                 Register
@@ -11,38 +18,68 @@
 
         <mat-form-field appearance="fill" class="w-full">
             <mat-label>Email</mat-label>
-            <input matInput type="email" placeholder="Email" required>
+            <input matInput type="email" placeholder="Email" required formControlName="email">
             <mat-icon matPrefix>email</mat-icon>
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="w-full">
             <mat-label>Full Name</mat-label>
-            <input matInput type="text" placeholder="Full Name" required>
+            <input matInput type="text" placeholder="Full Name" required formControlName="fullName">
             <mat-icon matPrefix>person</mat-icon>
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="w-full">
             <mat-label>Roles</mat-label>
-            <mat-select multiple placeholder="Select roles" required>
-                <mat-option value="admin">Admin</mat-option>
-                <mat-option value="user">User</mat-option>
+            <mat-select multiple placeholder="Select roles" required formControlName="roles">
+                @for (role of roles$ | async; track role) {
+                <mat-option [value]="role.name">{{role.name}}</mat-option>
+                }
             </mat-select>
             <mat-icon matPrefix>groups</mat-icon>
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="w-full">
             <mat-label>Password</mat-label>
-            <input matInput type="Password" placeholder="Password" required>
+            <input matInput type="{{passwordHide?'password':'text'}}" placeholder="Password" required
+                formControlName="password" autocomplete="off">
             <mat-icon matPrefix>lock</mat-icon>
+            <mat-icon matSuffix
+                (click)="passwordHide = !passwordHide">{{passwordHide?'visibility_off':'visibility'}}</mat-icon>
         </mat-form-field>
+        @if (registerForm.get('password')?.dirty && registerForm.get('password')?.touched) {
+            <span class="text-red-600" *ngIf="registerForm.get('password')?.hasError('pattern')">
+                Password must
+                contains at least eight characters,
+                including at least one number and
+                includes both lower and uppercase letters and
+                include at least one special characters.
+            </span>
+            }
 
         <mat-form-field appearance="fill" class="w-full">
             <mat-label>Confirm Password</mat-label>
-            <input matInput type="Password" placeholder="Confirm Password" required>
+            <input matInput type="{{confirmPasswordHide?'password':'text'}}" placeholder="Confirm Password" required
+                formControlName="confirmPassword" autocomplete="off">
             <mat-icon matPrefix>lock</mat-icon>
+            <mat-icon matSuffix (click)="confirmPasswordHide = !confirmPasswordHide">{{confirmPasswordHide?
+                'visibility_off':'visibility'}}</mat-icon>
         </mat-form-field>
+        @if (registerForm.get('confirmPassword')?.dirty && registerForm.get('confirmPassword')?.touched) {
+        <span class="text-red-600" *ngIf="registerForm.hasError('passwordMismatch')">
+            Password do not match
+        </span>
+        <span class="text-red-600" *ngIf="registerForm.hasError('pattern')">
+            Password must
+            contains at least eight characters,
+            including at least one number and
+            includes both lower and uppercase letters and
+            include at least one special characters.
+        </span>
+        }
 
-        <button class="w-full border border-collapse border-slate-200 rounded-md disabled:bg-purple-400 py-2 px-3 bg-purple-700 text-white"  type="submit">
+        <button [disabled]="!registerForm.valid"
+            class="w-full border border-collapse border-slate-200 rounded-md disabled:bg-purple-400 py-2 px-3 bg-purple-700 text-white"
+            type="submit">
             Register
         </button>
 

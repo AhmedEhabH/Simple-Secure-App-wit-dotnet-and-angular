@@ -6,6 +6,7 @@ import {map, Observable} from 'rxjs';
 import {environment} from '../../environments/environment.development';
 import {AuthResponse} from '../interfaces/auth-response';
 import {LoginRequest} from '../interfaces/login-request';
+import {RegisterRequest} from '../interfaces/register-request';
 
 @Injectable({providedIn : 'root'})
 export class AuthService {
@@ -27,21 +28,22 @@ export class AuthService {
 
     logOut = (): void => { localStorage.removeItem(this.tokenKey); }
 
-    getUserDetail = ()=>{
-        const token = this.getToken();
-        if (!token)
-            return null;
+    getUserDetail =
+        () => {
+            const token = this.getToken();
+            if (!token)
+                return null;
 
-        const decodedToken:any = jwtDecode(token);
-        const userDetail = {
-            id: decodedToken.nameid,
-            fullName: decodedToken.name,
-            email: decodedToken.email,
-            roles: decodedToken.role || [],
+            const decodedToken: any = jwtDecode(token);
+            const userDetail = {
+                id : decodedToken.nameid,
+                fullName : decodedToken.name,
+                email : decodedToken.email,
+                roles : decodedToken.role || [],
+            }
+
+            return userDetail;
         }
-
-        return userDetail;
-    }
 
     isLoggedIn = ():
         boolean => {
@@ -67,5 +69,11 @@ export class AuthService {
             return result;
         }
 
-        private getToken = (): string|null => localStorage.getItem(this.tokenKey) || '';
+    private getToken = (): string
+        |null => localStorage.getItem(this.tokenKey) || '';
+
+    register(data: RegisterRequest): Observable<AuthResponse> {
+        return this.http.post<AuthResponse>(`${this.apiUrl}/account/register`,
+                                            data);
+    }
 }

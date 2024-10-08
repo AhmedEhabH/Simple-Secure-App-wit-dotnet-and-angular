@@ -36,6 +36,12 @@ namespace API.Controllers
 
             if (!result.Succeeded)
             {
+                logger.LogWarning($"Failed to register {registerDto.Email}", user);
+                logger.LogWarning($"Errors: ");
+                foreach (var error in result.Errors)
+                {
+                    logger.LogWarning($"{error}");
+                }
                 return BadRequest(result.Errors);
             }
 
