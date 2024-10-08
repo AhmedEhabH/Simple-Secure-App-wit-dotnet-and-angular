@@ -76,7 +76,7 @@ export class RegisterComponent implements OnInit {
         }
         this.authService.register(this.registerForm.value).subscribe({
             next : (res) => {
-                console.log(res);
+                // console.log(res);
                 this.matSnackBar.open(`${res}`, 'Close', {
                     duration : 5000,
                     horizontalPosition : 'center',
@@ -85,10 +85,10 @@ export class RegisterComponent implements OnInit {
                 this.router.navigate([ '/login' ]);
             },
             error : (err: HttpErrorResponse) => {
-                console.error(err);
+                // console.error(err);
                 if (err!.status == 400) {
                     this.errors = err!.error;
-                    console.log(this.errors);
+                    // console.log(this.errors);
                     
                     this.matSnackBar.open('Validation error', 'Close', {
                         duration : 5000,

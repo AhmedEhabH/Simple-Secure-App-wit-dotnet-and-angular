@@ -7,6 +7,7 @@ import {environment} from '../../environments/environment.development';
 import {AuthResponse} from '../interfaces/auth-response';
 import {LoginRequest} from '../interfaces/login-request';
 import {RegisterRequest} from '../interfaces/register-request';
+import { UserDetail } from '../interfaces/user-detail';
 
 @Injectable({providedIn : 'root'})
 export class AuthService {
@@ -69,11 +70,15 @@ export class AuthService {
             return result;
         }
 
-    private getToken = (): string
+    getToken = (): string
         |null => localStorage.getItem(this.tokenKey) || '';
 
     register(data: RegisterRequest): Observable<AuthResponse> {
         return this.http.post<AuthResponse>(`${this.apiUrl}/account/register`,
                                             data);
+    }
+
+    getAccountDetail = () : Observable<UserDetail>=>{
+        return this.http.get<UserDetail>(`${this.apiUrl}/account/detail`);
     }
 }
