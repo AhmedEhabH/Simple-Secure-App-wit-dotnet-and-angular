@@ -5,10 +5,11 @@ import {map, Observable} from 'rxjs';
 
 import {environment} from '../../environments/environment.development';
 import {AuthResponse} from '../interfaces/auth-response';
+import {ChangePasswordRequest} from '../interfaces/change-password-request';
 import {LoginRequest} from '../interfaces/login-request';
 import {RegisterRequest} from '../interfaces/register-request';
+import {ResetPasswordRequest} from '../interfaces/reset-password-request';
 import {UserDetail} from '../interfaces/user-detail';
-import { ResetPasswordRequest } from '../interfaces/reset-password-request';
 
 @Injectable({providedIn : 'root'})
 export class AuthService {
@@ -96,13 +97,21 @@ export class AuthService {
             return decodedToken.role || null;
         }
 
-    forgetPassword = (email: string): Observable<AuthResponse> => {
-        return this.http.post<AuthResponse>(
-            `${this.apiUrl}/account/forget-password`, {email});
-    }
+    forgetPassword = (email: string):
+        Observable<AuthResponse> => {
+            return this.http.post<AuthResponse>(
+                `${this.apiUrl}/account/forget-password`, {email});
+        }
 
-    resetPassword = (data: ResetPasswordRequest): Observable<AuthResponse> => {
-        return this.http.post<AuthResponse>(
-            `${this.apiUrl}/account/reset-password`, data);
-    }
+    resetPassword = (data: ResetPasswordRequest):
+        Observable<AuthResponse> => {
+            return this.http.post<AuthResponse>(
+                `${this.apiUrl}/account/reset-password`, data);
+        }
+
+    changePassword =
+        (data: ChangePasswordRequest): Observable<AuthResponse> => {
+            return this.http.post<AuthResponse>(
+                `${this.apiUrl}/account/change-password`, data);
+        }
 }

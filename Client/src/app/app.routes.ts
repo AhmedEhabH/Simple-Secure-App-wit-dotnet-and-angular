@@ -14,6 +14,7 @@ import {
 } from './pages/reset-password/reset-password.component';
 import {RoleComponent} from './pages/role/role.component';
 import {UsersComponent} from './pages/users/users.component';
+import { ChangePasswordComponent } from './pages/change-password/change-password.component';
 
 export const routes: Routes = [
     {path : '', component : HomeComponent},
@@ -38,5 +39,10 @@ export const routes: Routes = [
     },
     {path : 'forget-password', component : ForgetPasswordComponent},
     {path : 'reset-password', component : ResetPasswordComponent},
+    {
+        path : 'change-password',
+        component : ChangePasswordComponent,
+        canActivate : [ authGuard ]
+    },
 
 ];

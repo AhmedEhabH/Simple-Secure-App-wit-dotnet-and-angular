@@ -229,7 +229,7 @@ namespace API.Controllers
             if (result.Succeeded)
             {
                 return Ok(new AuthResponseDto
-                {  
+                {
                     IsSuccess = true,
                     Message = "Password reset successfully"
                 });
@@ -240,6 +240,40 @@ namespace API.Controllers
                 IsSuccess = false,
                 Message = result.Errors.FirstOrDefault()!.Description
             });
+        }
+
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
+        {
+            var user = await userManager.FindByEmailAsync(changePasswordDto.Email);
+
+            if (user is null)
+            {
+                return BadRequest(new AuthResponseDto
+                {
+                    IsSuccess = false,
+                    Message = "User does not exist with this email address."
+                });
+            }
+
+            var result = await userManager.ChangePasswordAsync(user, changePasswordDto.CurrentPassword, changePasswordDto.NewPassword);
+
+            if (result.Succeeded)
+            {
+                return Ok(new AuthResponseDto
+                {
+                    IsSuccess = true,
+                    Message = "Password changed successfully"
+                });
+            }
+
+            return BadRequest(new AuthResponseDto
+            {
+                IsSuccess = false,
+                Message = result.Errors.FirstOrDefault()!.Description
+            });
+
+
         }
 
         private string GenerateToken(AppUser user)
