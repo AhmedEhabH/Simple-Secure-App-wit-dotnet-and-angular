@@ -34,6 +34,7 @@ builder.Services.AddAuthentication(opt =>
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero,
         ValidateIssuerSigningKey = true,
         ValidAudience = builder.Configuration.GetSection("JWTSetting:ValidAudience").Value,
         ValidIssuer = builder.Configuration.GetSection("JWTSetting:ValidIssuer").Value,
