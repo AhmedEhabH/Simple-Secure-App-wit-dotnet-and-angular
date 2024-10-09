@@ -77,7 +77,7 @@ export class RegisterComponent implements OnInit {
         this.authService.register(this.registerForm.value).subscribe({
             next : (res) => {
                 // console.log(res);
-                this.matSnackBar.open(`${res}`, 'Close', {
+                this.matSnackBar.open(`${res.message}`, 'Close', {
                     duration : 5000,
                     horizontalPosition : 'center',
                 });

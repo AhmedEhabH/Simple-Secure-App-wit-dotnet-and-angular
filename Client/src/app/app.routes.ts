@@ -3,11 +3,17 @@ import {Routes} from '@angular/router';
 import {authGuard} from './guards/auth.guard';
 import {roleGuard} from './guards/role.guard';
 import {AccountComponent} from './pages/account/account.component';
+import {
+    ForgetPasswordComponent
+} from './pages/forget-password/forget-password.component';
 import {HomeComponent} from './pages/home/home.component';
 import {LoginComponent} from './pages/login/login.component';
 import {RegisterComponent} from './pages/register/register.component';
+import {
+    ResetPasswordComponent
+} from './pages/reset-password/reset-password.component';
+import {RoleComponent} from './pages/role/role.component';
 import {UsersComponent} from './pages/users/users.component';
-import { RoleComponent } from './pages/role/role.component';
 
 export const routes: Routes = [
     {path : '', component : HomeComponent},
@@ -30,4 +36,7 @@ export const routes: Routes = [
         canActivate : [ roleGuard ],
         data : {roles : [ 'Admin' ]}
     },
+    {path : 'forget-password', component : ForgetPasswordComponent},
+    {path : 'reset-password', component : ResetPasswordComponent},
+
 ];

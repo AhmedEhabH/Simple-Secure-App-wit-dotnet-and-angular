@@ -5,7 +5,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using RestSharp;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 
@@ -139,7 +142,7 @@ namespace API.Controllers
         {
             var users = await userManager.Users.Select(u => new UserDetailDto
             {
-                Id=u.Id,
+                Id = u.Id,
                 Email = u.Email,
                 FullName = u.FullName,
                 Roles = userManager.GetRolesAsync(u).Result.ToArray(),
@@ -148,6 +151,96 @@ namespace API.Controllers
             return Ok(users);
         }
 
+        [AllowAnonymous]
+        [HttpPost("forget-password")]
+        public async Task<ActionResult> ForgetPassword(ForgetPasswordDto forgetPasswordDto)
+        {
+            var user = await userManager.FindByEmailAsync(forgetPasswordDto.Email);
+
+            if (user is null) { return NotFound(new AuthResponseDto { IsSuccess = false, Message = "User does not exist with this mail" }); }
+
+            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+
+            var resetLink = $"{config.GetSection("ClientURL").Value!}/reset-password?email={user.Email}&token={WebUtility.UrlEncode(token)}";
+
+            //using RestSharp;
+
+            //var client = new RestClient("https://send.api.mailtrap.io/api/send");
+            //var request = new RestRequest();
+            //request.AddHeader("Authorization", "Bearer 01b0e0af132b6f4db14acfdc225063d8");
+            //request.AddHeader("Content-Type", "application/json");
+            //request.AddParameter("application/json", "{\"from\":{\"email\":\"hello@demomailtrap.com\",\"name\":\"Mailtrap Test\"},\"to\":[{\"email\":\"nabil.sup1990@gmail.com\"}],\"template_uuid\":\"29d7fb66-969d-4c4f-884a-e9d72a71578e\",\"template_variables\":{\"user_email\":\"Test_User_email\",\"pass_reset_link\":\"Test_Pass_reset_link\"}}", ParameterType.RequestBody);
+            //var response = client.Post(request);
+            //System.Console.WriteLine(response.Content);
+
+
+            var client = new RestClient("https://send.api.mailtrap.io/api/send");
+
+            var request = new RestRequest
+            {
+                Method = Method.Post,
+                RequestFormat = DataFormat.Json,
+            };
+
+            request.AddHeader("Authorization", "Bearer 01b0e0af132b6f4db14acfdc225063d8");
+            request.AddJsonBody(new
+            {
+                from = new { email = "mailtrap@demomailtrap.com" },
+                to = new[] { new { email = user.Email } },
+                template_uuid = "29d7fb66-969d-4c4f-884a-e9d72a71578e",
+                template_variables = new { user_email = user.Email, pass_reset_link = resetLink }
+
+
+            });
+
+            var response = client.Execute(request);
+
+            if (response.IsSuccessful)
+            {
+                return Ok(new AuthResponseDto
+                {
+                    IsSuccess = true,
+                    Message = "Email sent with password reset link. Please check your mail."
+                });
+            }
+            else
+            {
+                return BadRequest(new AuthResponseDto
+                {
+                    IsSuccess = false,
+                    Message = response.Content!.ToString()
+                });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto resetPasswordDto)
+        {
+            var user = await userManager.FindByEmailAsync(resetPasswordDto.Email);
+
+            if (user is null)
+            {
+                return BadRequest(new AuthResponseDto { IsSuccess = false, Message = "User does not exist with this email address." });
+            }
+            //resetPasswordDto.Token = WebUtility.UrlDecode(resetPasswordDto.Token);
+            var result = await userManager.ResetPasswordAsync(user, resetPasswordDto.Token, resetPasswordDto.NewPassword);
+
+            if (result.Succeeded)
+            {
+                return Ok(new AuthResponseDto
+                {  
+                    IsSuccess = true,
+                    Message = "Password reset successfully"
+                });
+            }
+
+            return BadRequest(new AuthResponseDto
+            {
+                IsSuccess = false,
+                Message = result.Errors.FirstOrDefault()!.Description
+            });
+        }
 
         private string GenerateToken(AppUser user)
         {
